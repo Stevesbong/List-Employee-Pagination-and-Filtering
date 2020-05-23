@@ -1,75 +1,86 @@
-/******************************************
-Treehouse Techdegree:
-FSJS project 2 - List Filter and Pagination
-******************************************/
-   
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
-
-
-/*** 
-   Add your global variables that store the DOM elements you will 
-   need to reference and/or manipulate. 
-   
-   But be mindful of which variables should be global and which 
-   should be locally scoped to one of the two main functions you're 
-   going to create. A good general rule of thumb is if the variable 
-   will only be used inside of a function, then it can be locally 
-   scoped to that function.
-***/
+// FOR STUDENT LIST DISPLAY PURPOSE
 const students = document.querySelectorAll('.student-item');
-// console.log(students);
+const listDiv = document.querySelector('.student-list');
 const pageDiv = document.querySelector('.page');
 
+// get all students
+let allStudents = students;
+// FOR SEARCH FORM DISPLAY PURPOSE
+const pageHeader = document.querySelector('.page-header');
+const search = document.createElement('div');
+search.className = "student-search";
+const input = document.createElement('input');
+input.setAttribute('placeholder', "Search for students...");
+const button = document.createElement('button');
+button.textContent = "Search";
+search.appendChild(input);
+search.appendChild(button);
+pageHeader.appendChild(search);
+
+document.querySelector('input[placeholder]').addEventListener('input', (e) => {
+   // console.log(e.target.value, 'hi')
+
+   const name = document.getElementsByTagName('h3');
+   // console.log(name)
+   const inputValue = e.target.value;
+    // LOOPING THROUGH EACH ANCHOR TAG 'DATA-TITLE' ATTRIBUTE IN GALLERY DIV
+    allStudents.forEach( (element, i) => {
+
+      console.log(name[i].innerText);
+
+      // console.log(element.children[0].childNodes[3])
+        // PARAMETER ELEMENT IS WHOLE ANCHOR TAG IN HTML
+        // GET DATA TITLE( CAPTION )  FROM ANCHOR TAG
+      //   let name = element.getElementsByTagName('h3').toLowerCase();
+        
+      //   // IF TITLE DOES NOT INCLUDE INPUT VALUE SET DISPLAY NONE
+      //   if( !title.includes(inputValue.toLowerCase()) ) {
+      //       element.parentElement.style.display = "none"
+            
+      //       // UNSET GROUP OF IMAGES FROM LIGHTBOX PLUGIN
+      //       // THIS MAKES ONLY INCLUDE INPUT VALUE IMAGES TO VISIBLE ON THE LIGHTBOX 
+      //       element.setAttribute('data-lightbox', "")
+      //   }
+      //   else { // IF TITLE DOES INCLUDE INPUT VALUE   
+      //       element.parentElement.style.display = "block"
+      //   }
+    });
+})
 
 
-
-/*** 
-   Create the `showPage` function to hide all of the items in the 
-   list except for the ten you want to show.
-
-   Pro Tips: 
-     - Keep in mind that with a list of 54 students, the last page 
-       will only display four.
-     - Remember that the first student has an index of 0.
-     - Remember that a function `parameter` goes in the parens when 
-       you initially define the function, and it acts as a variable 
-       or a placeholder to represent the actual function `argument` 
-       that will be passed into the parens later when you call or 
-       "invoke" the function 
-***/
-
+// STUDENT LISTS TO WEBPAGE
 const showPage = (list, page) => {
-   // console.log(typeof list);
+
    // IF JAVASCRIPT WORKS, THAN HIDE HTML MARKUP
-   // list.forEach(element => {
-   //    element.style.display = 'none'
-   // });
+   listDiv.innerHTML = "";
+
+   // 10 LISTS STUDENTS FROM STUDENT LIST ON PAGE'S NUMBER
    let startIndex = ( page * 10 ) - 10;
    let endIndex = page * 10;
-   console.log(startIndex);
-   console.log(endIndex);
-   
-   let pageCount = 1;
-   // while( pageCount == page ) {
 
-   // }
+   // IF END INDEX IS BIGGER THAN STUDENT'S LIST LENGTH
+   if( endIndex > list.length) {
+      endIndex = list.length;
+   }
 
+   // ADD STUDENTS TO UNORDER LIST
    for( let i = startIndex; i < endIndex; i++) {
-      console.log(list[i])
+      listDiv.appendChild(list[i]);
    }
 }
 
-showPage(students, 1)
-
-
-
-/*** 
-   Create the `appendPageLinks function` to generate, append, and add 
-   functionality to the pagination buttons.
-***/
-
+// PAGINATION LINKS
 const appendPageLinks = list => {
-   let pageNumbers = Math.floor(list.length / 10);
+
+   // IF THERE IS NO STUDENT, SHOW THE MESSAGE
+   if( list.length === 0 ) {
+      return listDiv.innerHTML = `
+         <li class="student-item cf">There is no student</li>
+      `;
+   }
+
+   // GET HOW MANY PAGES NEED
+   let pageNumbers = Math.ceil(list.length / 10);
    if (list.length % 10 !== 0) {
       pageNumbers += 1;
    }
@@ -77,9 +88,10 @@ const appendPageLinks = list => {
    // CREATE PAGINATION DIV
    const pagination = document.createElement('div');
    const ul = document.createElement('ul');
-   
    pagination.className = 'pagination';
    pagination.appendChild(ul);
+
+   // CREATE PAGINATION LINKS TO ul
    for( let i = 1; i < pageNumbers; i++) {
       const li = document.createElement('li');
       const a = document.createElement('a');
@@ -88,30 +100,36 @@ const appendPageLinks = list => {
       a.href = "#";
       a.textContent = i;
    }
+
+   // APPEND PAGINATION LINKS TO BOTTOM OF THE WEBPAGE
    pageDiv.appendChild(pagination);
+   showPage(students, 1)
 
-   // console.log(pagination);
-   // console.log(pageDiv);
 
-   console.log(pageNumbers)
-   // console.log(list.length)
+   // THIS ATTRIBUTE SELECTOR WILL GET FIRST ELEMENT 
+   // AND SET CLASSNAME ACTIVE
+   document.querySelector('a[href="#"]').className = 'active';
+
+   // PAGINATION LINK EVENT LISTENER
+   // LOOP THROUGH EACH LINK ELEMENT AND WAIT FOR USER CLICK
+   document.querySelectorAll('a[href="#"]').forEach( (event, i) => {
+      event.addEventListener('click', e => {
+         console.log(e.target.textContent, 'page number')
+         showPage(students, e.target.textContent)
+         toggleActive(e.target);
+      })
+   })
 }
 
-appendPageLinks(students)
+appendPageLinks(students);
 
-// Remember to delete the comments that came with this file, and replace them with your own code comments.
+// TOGGLE ACTIVE CLASS WHEN USER CLIKED PAGE NUMBER
+function toggleActive(event) {
+   // GET CURRENT ACTIVE CLASS AND REMOVE
+   // console.log(event)
+   let current = document.getElementsByClassName("active")[0];
+   current.classList.remove("active");
 
-
-
-// function changeDataAndToggleActive(event, value) {
-//    // GET CURRENT ACTIVE CLASS AND REMOVE
-//    let current = document.getElementsByClassName("active")[0];
-//    current.classList.remove("active");
-
-//    // ADD ACTIVE CLASS TO CLICKED ELEMENT
-//    event.classList.add("active");
-
-//    // CHANGE CHART DATA SET WHEN CLICKED
-//    trafficChart.data.datasets[0].data = value;
-//    trafficChart.update()
-// }
+   // ACTIVE CLASS ON CLICKED ELEMENT
+   event.classList.add("active");
+}
