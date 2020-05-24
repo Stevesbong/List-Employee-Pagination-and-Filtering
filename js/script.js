@@ -3,6 +3,7 @@ const students = document.querySelectorAll('.student-item');
 const listDiv = document.querySelector('.student-list');
 const pageDiv = document.querySelector('.page');
 
+
 // MAKING SEARCH BOX
 function searchBox() {
    
@@ -23,48 +24,45 @@ function searchBox() {
    search.appendChild(input);
    search.appendChild(button);
    pageHeader.appendChild(search);
-   // FOR SEARCH FORM DISPLAY PURPOSE
 
+   // EVENT LISTENER FOR INPUT AND BUTTON
    input.addEventListener('keyup', searchingInputValue);
    button.addEventListener('click', searchingInputValue);
 }
 
 
+// GET INPUT VALUE AND MATCHED WITH STUDENTS' NAME AND DISPLAY IT
 function searchingInputValue() {
+   // GET ALL STUDENTS NAME, INPUT VALUE
    const name = document.getElementsByTagName('h3');
    const inputValue = document.querySelector('input[placeholder]').value.toLowerCase();
-   console.log(name, 'name check')
-   console.log(inputValue)
-   let searchedList = []
 
+   // TO SAVE FILTERED STUDENTS
+   let searchedList = [];
+
+   // IF THERE IS NO VALUE DISPLAY ALL STUDENTS
    if(!inputValue) {
-      pageOnload(students)
+      pageOnload(students);
       return;
    }
 
+   // IF THERE IS MESSAGE BOX PREVIOUS SEARCH, THEN REMOVE IT
    if(document.querySelector('.message')) {
-      document.querySelector('.message').remove()
-
+      document.querySelector('.message').remove();
    }
+
+   // LOOP THROUGH ALL STUDENTS THAT MATCHS THE VALUE AND PUSH IT TO NEW ARRAY
    students.forEach( (element, i) => {
-      // console.log(name[i].innerText.toLowerCase());
-      // console.log(element.childNodes[1].childNodes[3].textContent)
-      // console.log(name[i].parentNode.parentNode)
-
-      if(name) {
-         if(name[i].innerText.toLowerCase().includes(inputValue)){
-            // console.log(name[i].parentNode.parentNode)
-            name[i].parentNode.parentNode.style.display = ''
-            searchedList.push(element);
-         } else {
-            name[i].parentNode.parentNode.style.display = 'none'
-         }
-
+      if(name[i].innerText.toLowerCase().includes(inputValue)){
+         name[i].parentNode.parentNode.style.display = '';
+         searchedList.push(element);
+      } else {
+         name[i].parentNode.parentNode.style.display = 'none';
       }
    });
 
-   console.log(searchedList, 'result');
-   pageOnload(searchedList)
+   // DISPLAY FILTERED STUDENTS
+   pageOnload(searchedList);
 }
 
 
@@ -84,7 +82,7 @@ const showPage = (list, page) => {
       if ( !(i >= startIndex && i < endIndex) ) {
          list[i].style.display = 'none';
       } else {
-         list[i].style.display = ''
+         list[i].style.display = '';
       }
    }
 }
@@ -101,7 +99,7 @@ const appendPageLinks = list => {
    // MESSAGE BOX
    const noMatchMessage = document.createElement('li');
    noMatchMessage.className = 'message student-item';
-   noMatchMessage.innerText = 'There is no matched student.'
+   noMatchMessage.innerText = 'There is no matched student.';
 
    // IF THERE IS NO STUDENT, SHOW THE MESSAGE
    if( list.length === 0 ) {
@@ -146,7 +144,6 @@ const pageLinksEvent = list => {
 
       // LOOP THROUGH EACH LINK ELEMENT AND WAIT FOR USER CLICK
       event.addEventListener('click', e => {
-         console.log(e.target.textContent, 'page number')
          showPage(list, e.target.textContent);
          toggleActive(e.target);
       })
@@ -168,7 +165,6 @@ const toggleActive= event => {
 // EXECUTE IT WHEN THE WEBPAGE LOAD.
 // GET ALL STUDENTS AND HIDE IN THE HTML MARKUP
 const pageOnload = list => {
-   console.log(list, 'pageonload list');
    // FIRST HIDE ALL STUDENTS
    students.forEach( e => {
       e.style.display = 'none';
@@ -180,5 +176,6 @@ const pageOnload = list => {
 }
 
 
+// DISPLAY STUDENTS AND SEARCH BOX WHEN THE WEBPAGE LOAD
 pageOnload(students);
 searchBox();
