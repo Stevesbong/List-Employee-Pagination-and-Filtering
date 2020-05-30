@@ -38,7 +38,7 @@ function searchingInputValue() {
    const inputValue = document.querySelector('input[placeholder]').value.toLowerCase();
 
    // TO SAVE FILTERED STUDENTS
-   let searchedList = [];
+   const searchedList = [];
 
    // IF THERE IS NO VALUE DISPLAY ALL STUDENTS
    if(!inputValue) {
@@ -69,7 +69,7 @@ function searchingInputValue() {
 // STUDENT LISTS TO WEBPAGE
 const showPage = (list, page) => {
    // 10 LISTS STUDENTS FROM STUDENT LIST ON PAGE'S NUMBER
-   let startIndex = ( page * 10 ) - 10;
+   const startIndex = ( page * 10 ) - 10;
    let endIndex = page * 10;
 
    // IF END INDEX IS BIGGER THAN STUDENT'S LIST LENGTH
